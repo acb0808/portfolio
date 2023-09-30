@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flipCoin</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'LotteMartHappy';
+            font-style: normal;
+            font-weight: 400;
+            src: url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyMedium.woff2') format('woff2'), url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyMedium.woff') format('woff');
+        }
+
+        @font-face {
+            font-family: 'LotteMartHappy';
+            font-style: normal;
+            font-weight: 700;
+            src: url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyBold.woff2') format('woff2'), url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyBold.woff') format('woff');
+        }
+        body {
+            font-family: 'LotteMartHappy', sans-serif;
+            background: #F7F7F7;
+            -webkit-perspective: 800px;
+            /* color: rgb(70, 70, 70); */
+        }
+        strong {
+            color: black;
+        }
+        .status {
+            margin: 0;
+            text-align: center;
+        }
+        .coin-status.status {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+</head>
+<body>
+    <h1>동전을 뒤집어라!</h1>
+    <p>우리는 친구들과 동전의 앞, 뒤를 맞추는 게임을 하곤 합니다.</p>
+    <p>간단한 음료수 내기를 하기도 하죠.</p>
+    <p>하지만 돈을 내고 한다면, 어떨까요?</p>
+    <p>만약 앞면이 나오면 원금의 2배를 얻게 되고, 아니면 원금의 30%만 남는다고 해봅시다.</p>
+    <p>당신이 10원씩 계속 배팅한다고 해봅시다.</p>
+
+    <hr style="margin: 40px;">
+
+    <div id="game">
+        <div id="coin">
+            <div class="side-a"></div>
+            <div class="side-b"></div>
+        </div>
+        <p class="coin-status status">현재 코인은 앞면입니다.</p>
+        <p class="money status">당신은 1000원을 가지고 있습니다.</p>
+    </div>
+    
+    <hr style="margin: 40px;">
+
+    <p>당신은 이 배팅의 승자입니까?</p>
+    <p>아마도 당신은 높은 확률로 원금 1000원보단 많은 돈을 가지고 있을 겁니다.</p>
+    <p>왜냐하면 이 게임은 확률적으로 50대 50으로 100판을 하면</p>
+    <p>50판을 얻고 50판을 잃는게 이상적이고 그 경우 150원을 얻기 때문이죠.</p>
+
+    <br>
+    <p>잠깐 내용을 짚고 넘어가자면 1000번 동전을 던져서 나오는 앞면에
+        개수는 이항분포를 따릅니다.</p>
+    <p>그리고 이건 정규분포로 근사가 되죠.</p>
+    <br>
+    <p>1000판을 했을 경우에 분산은 250 시그마는 15.8 정도 됩니다 그럼 투시그마가 대략 30 정도 되니까</p>
+    <p>470~530번을 이길 확률이 95%가까이 된다는 것이지요.</p>
+    <p>즉 정말 안좋은 경우라고 하더라도 990원의 수익을 내는 것입니다.</p>
+
+    <br>
+    <p>그럼 당신은 여기서 참을 것인가요?</p>
+    <p>항상 이득이 되는 게임은 계속하는 것이 좋습니다.</p>
+    <p>우리는 점점 더 많은 돈을 베팅하게 될것입니다.</p>
+
+    <br>
+    <p>우리는 이런 게임을 할때면 자산의 몇%를 배팅하게 됩니다.</p>
+    <p>너무 적게 배팅하게 되면 이익이 너무 적죠.</p>
+    <p>그래서 많은 비율을 배팅하게 됩니다. 영끌이라고도 하죠. </p>
+    <p>한번 올인 베팅을 한다고 합시다.</p>
+
+    <hr style="margin: 40px;">
+    <img src="./image/flipcoinallin.png" alt="이미지" style="width: min(95vw, 450px);">
+    <p>그림에서 알 수 있듯이, 분명히 이득이 되는 게임을 하는데 손해를 봅니다</p>
+    <p>올인베팅을 4번만 하더라도, 자산이 64%가 줄게 되는 것이죠.</p>
+
+    <p>그럼 얼마를 베팅해야할까요?</p>
+    <p>정답은 바로 미분에 있습니다.</p>
+    <br>
+    
+    <p>당신이 정률베팅을 해본다고 하죠.</p>
+    <p>자신의 자산의 x만큼의 비율을 배팅한다고 합시다.</p>
+    <p>이겼을 때에는 자산이 1+x배가 되겠죠</p>
+    <p>졌을 때에는   자산이 1-0.7x배가 되겠네요.</p>
+    <p>그럼 2판을 했을 때 1판 지고, 1판 이기는 것을 기대할 수 있으니</p>
+    <p>2판을 했을 때 (1+x)(1-0.7x)배가 되는 것입니다.</p>
+
+    <br>
+    <p>여러분들은 이 이차함수의 최댓값을 구하는 법을 알고 있죠.</p>
+    <p>우리는 미분을 통해 구해보도록 하죠.</p>
+    <p>y' = -0.7(1+x) + 1-0.7x = 0.3-1.4x</p>
+    <p>이때 기울기가 o이 되는 x는 3/14가 되겠네요.</p>
+
+    <hr>
+    <div id="calculator" style="width: min(95vw, 750px);height: calc(min(95vw, 750px) / 4 * 3); "></div>
+    <hr style="margin-bottom: 30px;">
+
+    <p>보시다시피, 우리의 자산 0.214씩 계속 걸다 보면 1.032씩 자산이 늘어나는 것이죠 </p>
+    <p>반면에 재산의 70%를 배팅하면 0.867배씩 계속 줄어들죠.</p>
+    <p>삶의 지혜가 녹아들어 있습니다.</p>
+    <p>시뮬레이션으로 확인해볼까요??</p>
+    <hr>
+
+    <div id="simulations">
+        <h2>시뮬레이터</h2>
+        <span>시작 금액은 1,000,000원입니다.</span>
+        <div class="input-layer">
+            <label for="tries">시도횟수</label>
+            <input type="text" id="tries" value="1000">
+            <label for="bettingRate">배팅률</label>
+            <input type="text" id="bettingRate" value="0.214">
+            <button id="start_simulate">gogo</button>
+        </div>
+        <div class="result-layer">
+            <p style="margin: 10px 0 0 0;" id="now_money">현재금액 : 1000000</p>
+            <p style="margin: 0;" id="win_count">이긴 횟수 : 0</p>
+        </div>
+
+    </div>
+
+    <hr>
+    <p>자 이제 여러분들은 다양한 확률적인 상황에 놓였을 때</p>
+    <p>최적의 선택을 할 수 있게 되었습니다.</p>
+    <p>제가 알려드린 내용은 <strong>켈리기준, 켈리전략</strong>이라고 불립니다.</p>
+    <p>워렌버핏과 같은 유명한 투자자들 또한 이 방법을 통해 투자를 한다고 하죠</p>
+    <p>이제 우리는 켈리전략에 대해 알았습니다. 이제 이 방법을 통해 직접 베팅을 해볼까요?</p>
+
+
+    <br>
+    <br>
+    <hr>
+    <p style="text-align: right;">페이지의 끝입니다</p>
+
+    <script>
+        var elt = document.getElementById('calculator');
+        var calculator = Desmos.GraphingCalculator(elt, {expressionsCollapsed:true, settingsMenu:false, keypad:false});
+        calculator.setExpression({id:'graph1', latex:'y=(1+x)(1-0.7x)'});
+        calculator.setExpression({id:'graph2', latex:'x=3/14'});
+    </script>
+
+    <script>
+
+        function playgame(){
+            var flipResult = Math.random();
+            $('#coin').removeClass();
+            setTimeout(function(){
+                if(flipResult <= 0.5){
+                $('#coin').addClass('heads');
+                money += 10
+                }
+                else{
+                $('#coin').addClass('tails');
+                money -= 7
+                }
+            }, 100);
+            setTimeout(function(){
+                if(flipResult <= 0.5){
+                console.log('it is head');
+                $('.coin-status').html('현재 코인은 앞면입니다.')
+                }
+                else{
+                console.log('it is tails');
+                $('.coin-status').html('현재 코인은 뒷면입니다.')
+                }
+                $('.money.status').html(`당신은 ${money}원을 가지고 있습니다.`)
+            }, 1500);
+        }
+
+        var money = 1000
+        jQuery(document).ready(function($){
+
+            $('#coin').on('click', function(){
+                playgame()
+            });
+
+            $('#start_simulate').on('click', () => {
+                var money = 1000000
+                var tries = parseInt($('#tries').val())
+                var win = 0
+                const bettingRate = parseFloat($('#bettingRate').val())
+                if (tries == NaN || bettingRate == NaN) {
+                    alert('정확한 값을 입력해주세요!')
+                    return;
+                }
+                if (bettingRate < 0 || tries < 1 || bettingRate > 1) {
+                    alert('정확한 범위를 입력해주세요!')
+                    return;
+                }
+                const repeater = setInterval(()=>{
+                    if (tries == 0) {
+                        clearInterval(repeater)
+                        $('#now_money').html(`현재금액 : ${money.toLocaleString('ko-KR')}`)
+                        return
+                    }
+                    tries -= 1
+                    var flipResult = Math.random();
+                    if (flipResult <= 0.5) {
+                        win += 1
+                        money += money*bettingRate
+                    }
+                    else {
+                        money -= money*bettingRate*0.7
+                    }
+                    $('#now_money').html(`현재금액 : ${money}`)
+                    $('#win_count').html(`이긴 횟수 : ${win}`)
+                }, 1)
+            })
+        });
+    </script>
+    <style>
+        #coin {
+            position: relative;
+            margin: 0 auto;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            }
+            #coin div {
+            width: 100%;
+            height: 100%;
+            -webkit-border-radius: 50%;
+                -moz-border-radius: 50%;
+                    border-radius: 50%;
+            -webkit-box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+                -moz-box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+                    box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+            }
+            .side-a {
+            background-color: #bb0000;
+            }
+            .side-b {
+            background-color: #3e3e3e;
+            }
+
+            #coin {
+            transition: -webkit-transform 0.5s ease-in;
+            -webkit-transform-style: preserve-3d;
+            }
+            #coin div {
+            position: absolute;
+            -webkit-backface-visibility: hidden;
+            }
+            .side-a {
+            z-index: 100;
+            }
+            .side-b {
+            -webkit-transform: rotateY(-180deg);
+
+            }
+
+            #coin.heads {
+            -webkit-animation: flipHeads 1.5s ease-out forwards;
+            -moz-animation: flipHeads 1.5s ease-out forwards;
+                -o-animation: flipHeads 1.5s ease-out forwards;
+                animation: flipHeads 1.5s ease-out forwards;
+            }
+            #coin.tails {
+            -webkit-animation: flipTails 1.5s ease-out forwards;
+            -moz-animation: flipTails 1.5s ease-out forwards;
+                -o-animation: flipTails 1.5s ease-out forwards;
+                animation: flipTails 1.5s ease-out forwards;
+            }
+
+            @-webkit-keyframes flipHeads {
+            from { -webkit-transform: rotateY(0); -moz-transform: rotateY(0); transform: rotateY(0); }
+            to { -webkit-transform: rotateY(1800deg); -moz-transform: rotateY(1800deg); transform: rotateY(1800deg); }
+            }
+            @-webkit-keyframes flipTails {
+            from { -webkit-transform: rotateY(0); -moz-transform: rotateY(0); transform: rotateY(0); }
+            to { -webkit-transform: rotateY(1980deg); -moz-transform: rotateY(1980deg); transform: rotateY(1980deg); }
+            }
+
+
+    
+    </style>
+</body>
+</html>

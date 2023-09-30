@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClashRoyale</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'LotteMartHappy';
+            font-style: normal;
+            font-weight: 400;
+            src: url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyMedium.woff2') format('woff2'), url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyMedium.woff') format('woff');
+        }
+
+        @font-face {
+            font-family: 'LotteMartHappy';
+            font-style: normal;
+            font-weight: 700;
+            src: url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyBold.woff2') format('woff2'), url('https://cdn.jsdelivr.net/korean-webfonts/1/corps/lottemart/LotteMartHappy/LotteMartHappyBold.woff') format('woff');
+        }
+        body {
+            font-family: 'LotteMartHappy', sans-serif;
+            background: #F7F7F7;
+            -webkit-perspective: 800px;
+            /* color: rgb(70, 70, 70); */
+        }
+        strong {
+            color: black;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        button {
+            background: #fff;
+            border: 1px solid;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+</head>
+<body>
+    <h1>클래시로얄 그랜드도전</h1>
+    <img src="./image/clashroyale.webp" alt="클래시로얄 이미지" style="width: min(500px, 95vw);">
+    <p>클래시로얄에는 과거 베타버전에는 서로의 골드를 걸고 싸우는 약탈전이 있었습니다.</p>
+    <p>서로가 돈을 걸고, 이기면 건 돈의 2배를 싹쓸어가는 구조였죠.</p>
+    <p>무승부를 하면 원금을 가져가고, 지면 뺏깁니다.</p>
+    <br>
+
+    <p>이 게임을 잘하는 '석현'은 약탈전을 꽤나 잘했습니다.</p>
+    <p>승률이 60%정도였고, 무승부도 5%로 지는 일이 거의 없었습니다.</p>
+    <p>이때 석현은 얼만큼의 돈을 베팅해야 이득을 볼까요?</p>
+
+    <button onclick="$('#answer').toggle()">정답보기</button>
+    <div id="answer" style="display: none; margin-top: 30px;">
+        <hr>
+        <p>석현이의 승률은 다음과 같습니다</p>
+        <table style="width: min(100%, 500px);">
+            <thead>
+                <tr>
+                    <td>승</td>
+                    <td>무</td>
+                    <td>패</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>60%</td>
+                    <td>5%</td>
+                    <td>35%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>즉 20판 했을 때, 12판은 승리, 1판은 무승부, 7판은 패배입니다.</p>
+        <p>우리는 즉 아래와 같은 수식을 세울 수 있습니다</p>
+        <img src="./image/clashroyaleExpression.JPG" alt="수식">
+        <p>'석현'이 가지고 있는돈의 x만큼의 돈을 배팅했을 때 이런 수식을 기대해볼 수 있겠죠.</p>
+        <p>우리는 위 식을 미분하고 극대값을 찾으면 최적의 배팅률을 구할 수 있겠네요.</p>
+        <p>미적분을 선행한 친구들은 한 번 시도해 보는 것도 나쁘지 않겠네요.</p>
+        
+        <br>
+        <p>미분하면 다음과 같습니다.</p>
+        <img src="./image/clashroyaleExpressionDifferential.JPG" alt="수식2">
+        <p>미분을 했을 시에 해는 5/19가 나오게 되네요</p>
+        <div id="calculator" style="width: min(95vw, 750px);height: calc(min(95vw, 750px) / 4 * 3); "></div>
+        <button onclick="change_graph()" style="margin-top: 20px;">함수 변경</button>
+        <p>결론적으로 우리는 '석현'이 자산의 5/19만큼 투자해서 20판을 한다면</p>
+        <p>1.94배의 자산증가를 기대해 볼 수 있겠네요.</p>
+        <p>결론적으로 5/19를 배팅하는 것이 정답입니다.</p>
+    </div>
+    <hr>
+    <div id="simulations">
+        <h2>시뮬레이터</h2>
+        <span>시작 금액은 1,000,000원입니다.</span>
+        <div class="input-layer">
+            <label for="tries">시도횟수</label>
+            <input type="text" id="tries" value="1000">
+            <label for="bettingRate">배팅률</label>
+            <input type="text" id="bettingRate" value="0.5">
+            <button id="start_simulate">gogo</button>
+        </div>
+        <div class="result-layer">
+            <p style="margin: 10px 0 0 0;" id="now_money">현재금액 : 1000000</p>
+            <p style="margin: 0;" id="win_count">이긴 횟수 : 0</p>
+            <p style="margin: 0;" id="draw_count">비긴 횟수 : 0</p>
+            <p style="margin: 0;" id="lose_count">진 횟수 : 0</p>
+        </div>
+
+    </div>
+
+    <hr>
+    <p style="text-align: right;">페이지의 끝입니다</p>
+    <script>
+        var elt = document.getElementById('calculator');
+        var calculator = Desmos.GraphingCalculator(elt, {expressionsCollapsed:true, settingsMenu:false, keypad:false});
+        calculator.setExpression({id:'diff', latex:'y=\\left(1+x\\right)^{11}\\left(1-x\\right)^{6}\\left(-7\\left(1+x\\right)+12\\left(1-x\\right)\\right)'});
+        calculator.setExpression({id:'origin', latex:'y=\\left(1+x\\right)^{12}\\left(1-x\\right)^{7}1^{1}', hidden:true});
+        calculator.setExpression({id:'localMaximum', latex:'x=\\frac{5}{19}', hidden:true});
+        var isdiffShowed = true
+        function change_graph() {
+            calculator.setExpression({id:'diff', hidden:isdiffShowed})    
+            calculator.setExpression({id:'origin', hidden:!isdiffShowed});
+            calculator.setExpression({id:'localMaximum', hidden:!isdiffShowed});
+            isdiffShowed = !isdiffShowed
+        }
+    </script>
+
+    <script>
+        jQuery(document).ready(function($){
+            $('#start_simulate').on('click', () => {
+                    var money = 1000000
+                    var tries = parseInt($('#tries').val())
+                    var win = 0
+                    var lose = 0
+                    var draw = 0
+                    const bettingRate = parseFloat($('#bettingRate').val())
+                    if (tries == NaN || bettingRate == NaN) {
+                        alert('정확한 값을 입력해주세요!')
+                        return;
+                    }
+                    if (bettingRate < 0 || tries < 1 || bettingRate > 1) {
+                        alert('정확한 범위를 입력해주세요!')
+                        return;
+                    }
+                    const repeater = setInterval(()=>{
+                        if (tries == 0) {
+                            clearInterval(repeater)
+                            $('#now_money').html(`현재금액 : ${money.toLocaleString('ko-KR')}`)
+                            return
+                        }
+                        tries -= 1
+                        var flipResult = Math.random();
+                        if (flipResult <= 0.6) {
+                            win += 1
+                            money += money*bettingRate
+                        }
+                        else if (flipResult <= 0.65) {
+                            draw += 1
+                        }
+                        else {
+                            lose += 1
+                            money -= money*bettingRate
+                        }
+                        $('#now_money').html(`현재금액 : ${money}`)
+                        $('#win_count').html(`이긴 횟수 : ${win}`)
+                        $('#draw_count').html(`비긴 횟수 : ${draw}`)
+                        $('#lose_count').html(`진 횟수 : ${lose}`)
+                    }, 1)
+                });
+            });
+    </script>
+</body>
+</html>

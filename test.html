@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        body {
+            border: 0;
+            margin: 0;
+        }
+    </style>
+    <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+</head>
+<body>
+    <div id="calculator" style="width: 95vw;height: 95vh; margin: auto auto;transform: translateY(2.5%);"></div>
+    
+
+    <script>
+        var elt = document.getElementById('calculator');
+        var calculator = Desmos.GraphingCalculator(elt, expressions=false);
+        calculator.setExpression({id:'graph1', latex:'y=x^2'});
+      </script>
+</body>
+</html>
